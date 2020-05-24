@@ -1,5 +1,7 @@
 package lectures
 
+import scala.annotation.tailrec
+
 /**
  * Created by Jhony Vidal on 24-May-20.
  * In order to run a recursive function the Java virtual machine on top of which Scala runs
@@ -25,9 +27,10 @@ object Recursion extends App {
   // WRITE CODE IN A SMART WAY
   // Using accumulator
   def superPowerFactorial(n: Int): BigInt = {
+    @tailrec
     def factHelper(x: Int, accumulator: BigInt): BigInt =
       if (x <= 1) accumulator
-      else factHelper(x - 1, x * accumulator)
+      else factHelper(x - 1, x * accumulator) // TAIL RECURSION = use recursive call as the LAST expression
 
     factHelper(n, 1)
   }
@@ -46,4 +49,55 @@ object Recursion extends App {
   // If we run superPowerFactorial with Return :Int we will run out of integer representation, showing on terminal a "zero"
   // As 5000 is "absolutely astronomical" and it overflows
   // Solve this problem using BigInt
+
+  // TODO take notes to own file with ref to method/ .scala
+  /**
+   * WHEN YOU NEED LOOP, USE _TAIL_ RECURSION!
+   * Any function can be turned into a tail recursive function.
+   * HINT: You need as many <accumulators> as you have recursive calls on your code path
+   * sometimes you need more than one accumulator.
+   * <Accumulators> must return the same return type for the function
+   */
+
+  /**
+   * EXERCISES:
+   *  1. Concatenate a string n times
+   *  2. IsPrime function tail recursive
+   *  3. Fibonnaci function, tail recursive
+   */
+
+  // 1. Concatenate a string n times
+  @tailrec
+  def concatenateTailrec(aString: String, n: Int, accumulator: String): String =
+    if (n <= 0) accumulator
+    else concatenateTailrec(aString, n-1, aString + accumulator)
+
+  println(concatenateTailrec("hello", 3, ""))
+
+  // 2.IsPrime function tail recursive
+  def isPrime(n: Int): Boolean = {
+    @tailrec
+    def isPrimeTailrec(t: Int, isStillPrime: Boolean): Boolean =
+      if(!isStillPrime) false
+      else if (t <= 1) true
+      else isPrimeTailrec(t - 1, n % t != 0 && isStillPrime) // We store the result of n % t != 0 inside the accumulatoris(StillPrime)
+
+    isPrimeTailrec(n / 2, true)
+  }
+
+  println(isPrime(2003))
+  println(isPrime(629))
+
+  // 3. Fibonnaci function, tail recursive / Two accumulators
+  def fibonacci(n: Int): Int = {
+    @tailrec
+    def fiboTailrec(i: Int, last: Int, nextToLast: Int): Int = // however many recursive calls on the same code path, that is how many accumulators you need
+      if(i >= n) last
+      else fiboTailrec(i + 1, last + nextToLast, last)
+
+    if (n <= 2) 1
+    else fiboTailrec(2, 1, 1)
+  }
+
+  println(fibonacci(8))
 }
