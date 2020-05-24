@@ -3,7 +3,6 @@ package lectures
 import scala.annotation.tailrec
 
 /**
- * Created by Jhony Vidal on 24-May-20.
  * In order to run a recursive function the Java virtual machine on top of which Scala runs
  * uses a call stack to keep partial results so that it can get back to
  * computing the desired result.
@@ -50,7 +49,6 @@ object Recursion extends App {
   // As 5000 is "absolutely astronomical" and it overflows
   // Solve this problem using BigInt
 
-  // TODO take notes to own file with ref to method/ .scala
   /**
    * WHEN YOU NEED LOOP, USE _TAIL_ RECURSION!
    * Any function can be turned into a tail recursive function.

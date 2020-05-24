@@ -1,8 +1,5 @@
 package lectures
 
-/**
- * Created by Jhony Vidal on 24-May-20.
- */
 object Functions extends App {
 
   def aFunction(a: String, b: Int): String = {

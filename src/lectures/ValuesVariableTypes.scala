@@ -1,8 +1,5 @@
 package lectures
 
-/**
- * Created by Jhony Vidal on 24-May-20.
- */
 object ValuesVariableTypes extends App {
 
   val x: Int = 42
