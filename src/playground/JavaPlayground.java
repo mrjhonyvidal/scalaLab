@@ -10,6 +10,9 @@ public class JavaPlayground {
     }
 }
 
+/**
+ * TODO Add more info on benefits and best practices of using static methods, static classes
+ */
 class Person {
     public static final int N_EYES = 2;
 }
