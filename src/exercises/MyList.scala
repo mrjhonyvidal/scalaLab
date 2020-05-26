@@ -35,7 +35,7 @@ abstract class MyList[+A] {
  * We'are going to create an empty list and a non empty list
  */
 
-object Empty extends MyList[Nothing] {
+case object Empty extends MyList[Nothing] {
   def head: Nothing = throw new NoSuchElementException
   def tail: MyList[Nothing] = throw new NoSuchElementException
   def isEmpty: Boolean = true
@@ -49,7 +49,7 @@ object Empty extends MyList[Nothing] {
   def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
 }
 
-class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
+case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   //def head: Int = ??? // ??? if we call the method it will throw a NotImplemented Exception
   def head: A = h
   def tail: MyList[A] = t
@@ -123,6 +123,7 @@ object ListTest extends App {
    * println(linkedList.toString)
    */
     val listOfIntegers: MyList[Int] = new Cons(1, new Cons(2, new Cons(3, Empty)))
+    val cloneListOfIntegers: MyList[Int] = new Cons(1, new Cons(2, new Cons(3, Empty)))
     val anotherListOfIntegers: MyList[Int] = new Cons(4, new Cons(5, Empty))
     val listOfStrings: MyList[String] = new Cons("Hello", new Cons("Scala", Empty))
 
@@ -146,4 +147,6 @@ object ListTest extends App {
     println(listOfIntegers.flatMap(new MyTransformer[Int, MyList[Int]] {
       override def transform(elem: Int): MyList[Int] = new Cons(elem, new Cons(elem + 1, Empty))
     }))
+
+    println(cloneListOfIntegers == listOfIntegers) // Out of box it was implemented equals method applied to the list
 }
