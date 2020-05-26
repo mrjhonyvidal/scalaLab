@@ -1,6 +1,6 @@
 package exercises
 
-abstract class MyList {
+abstract class MyList[+A] {
 
   /**
    * head = first element of the list
@@ -9,10 +9,10 @@ abstract class MyList {
    * add(int) => new list with this element added
    * toString => a string representation of the list
    */
-  def head: Int
-  def tail: MyList
+  def head: A
+  def tail: MyList[A]
   def isEmpty: Boolean
-  def add(element: Int): MyList // We return a new list when we want to modify our list
+  def add[B >: A](element: B): MyList[B] // We return a new list when we want to modify our list
   def printElements: String
 
   // polymorphic call
@@ -25,36 +25,43 @@ abstract class MyList {
  * We'are going to create an empty list and a non empty list
  */
 
-object Empty extends MyList {
-  def head: Int = throw new NoSuchElementException
-  def tail: MyList = throw new NoSuchElementException
+object Empty extends MyList[Nothing] {
+  def head: Nothing = throw new NoSuchElementException
+  def tail: MyList[Nothing] = throw new NoSuchElementException
   def isEmpty: Boolean = true
-  def add(element: Int): MyList = new Cons(element, Empty)
+  def add[B >: Nothing](element: B): MyList[B] = new Cons(element, Empty)
   def printElements: String = ""
 }
 
-class Cons(h: Int, t: MyList) extends MyList {
+class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   //def head: Int = ??? // ??? if we call the method it will throw a NotImplemented Exception
-  def head: Int = h
-  def tail: MyList = t
+  def head: A = h
+  def tail: MyList[A] = t
   def isEmpty: Boolean = false
-  def add(element: Int): MyList = new Cons(element, this) // We return this object as tail
+  def add[B >: A](element: B): MyList[B] = new Cons(element, this) // We return this object as tail
   def printElements: String =
     if(t.isEmpty) "" + h
     else h + " " + t.printElements // Recursively print the elements calling on the tail
 }
 
 object ListTest extends App {
-  val list = new Cons(1, Empty)
 
-  //Example of LinkedList
-  val linkedList = new Cons(1, new Cons(2, new Cons(3, Empty))) // This is Linked List
+  /**
+   * val list = new Cons(1, Empty)
+   * Example of LinkedList
+   * val linkedList = new Cons(1, new Cons(2, new Cons(3, Empty))) // This is Linked List
+   *
+   * println(list.head) // 1
+   * println(list.add(4).head)
+   * println(list.isEmpty)
+   * println(linkedList.tail.head) // 2
+   *
+   * println(list.toString)
+   * println(linkedList.toString)
+   */
+    val listOfIntegers: MyList[Int] = new Cons(1, new Cons(2, new Cons(3, Empty)))
+    val listOfStrings: MyList[String] = new Cons("Hello", new Cons("Scala", Empty))
 
-  println(list.head) // 1
-  println(list.add(4).head)
-  println(list.isEmpty)
-  println(linkedList.tail.head) // 2
-
-  println(list.toString)
-  println(linkedList.toString)
+    println(listOfIntegers.toString)
+    println(listOfStrings.toString)
 }
