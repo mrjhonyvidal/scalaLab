@@ -32,7 +32,7 @@ object Functions extends App {
   }
 
   /**
-   * Exercises: write a function to the following statements:
+   * TASKS: write a function to the following statements:
    * 1. A greeting function (name, age) => "Hi, my name is $name and I amd $age years old."
    * 2. Factorial function (1 * 2 * 3 * .. * n
    * 3. A Fibonacci function

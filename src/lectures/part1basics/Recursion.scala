@@ -58,7 +58,7 @@ object Recursion extends App {
    */
 
   /**
-   * EXERCISES:
+   * TASKS:
    *  1. Concatenate a string n times
    *  2. IsPrime function tail recursive
    *  3. Fibonnaci function, tail recursive

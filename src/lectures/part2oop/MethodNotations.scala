@@ -57,7 +57,7 @@ object MethodNotations extends App {
 
   // ==================================
   /**
-   * EXERCISES
+   * TASKS
    * 1. Overload the + operator
    *    "mary + "the rockstars" => new person "Mary (the rockstars)"
    */
