@@ -1,0 +1,5 @@
+package playground
+
+class Random {
+
+}
