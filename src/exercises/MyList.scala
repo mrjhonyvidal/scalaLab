@@ -137,22 +137,30 @@ object ListTest extends App {
     println(listOfStrings.toString)
 
     // Our own .map() implementation using Anonymous Class and Generics
-    println(listOfIntegers.map(new Function1[Int, Int] {
+    /**println(listOfIntegers.map(new Function1[Int, Int] {
       // Anonymous Class
       override def apply(elem: Int): Int = elem * 2
-    }).toString)
+    }).toString)**/
+
+    //println(listOfIntegers.map(elem => elem * 2).toString)
+    println(listOfIntegers.map( _ * 2 ).toString)
 
     // Our own .filter() implementation
-    println(listOfIntegers.filter(new Function1[Int, Boolean]{
+    /**println(listOfIntegers.filter(new Function1[Int, Boolean]{
       override def apply(elem: Int): Boolean = elem % 2 == 0
-    }).toString)
+    }).toString)**/
+    //println(listOfIntegers.filter(elem => elem % 2 ==0).toString)
+    println(listOfIntegers.filter( _ % 2 ==0 ).toString)
 
     println((listOfIntegers ++ anotherListOfIntegers).toString)
 
     // Our own .flatMap() implementation
-    println(listOfIntegers.flatMap(new Function[Int, MyList[Int]] {
+    /**println(listOfIntegers.flatMap(new Function[Int, MyList[Int]] {
       override def apply(elem: Int): MyList[Int] = new Cons(elem, new Cons(elem + 1, Empty))
-    }))
+    }))**/
+
+    // _ will not work for this lambda because we use the element two times in the implementation
+    println(listOfIntegers.flatMap(elem => new Cons(elem, new Cons(elem + 1, Empty))).toString)
 
     println(cloneListOfIntegers == listOfIntegers) // Out of box it was implemented equals method applied to the list
 }
