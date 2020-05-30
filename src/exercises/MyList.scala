@@ -23,9 +23,12 @@ abstract class MyList[+A] {
   // toString, equals, hash code are methods that are present in Any Ref class
   override def toString: String = "[" + printElements + "]"
 
-  def map[B](transformer: MyTransformer[A, B]): MyList[B]
-  def flatMap[B](transformer: MyTransformer[A, MyList[B]]): MyList[B]
-  def filter(predicate: MyPredicate[A]): MyList[A]
+  // Refactored to be a more FP using Scala Function Types
+  // This functions in particular are called Higher-order functions
+  // Higher-order functions either receive functions as parameters or return other functions as result
+  def map[B](transformer: A => B): MyList[B]
+  def flatMap[B](transformer: A => MyList[B]): MyList[B]
+  def filter(predicate: A => Boolean): MyList[A]
 
   // This is our concatenate function
   def ++[B >: A](list: MyList[B]): MyList[B]
@@ -42,9 +45,9 @@ case object Empty extends MyList[Nothing] {
   def add[B >: Nothing](element: B): MyList[B] = new Cons(element, Empty)
   def printElements: String = ""
 
-  def map[B](transformer: MyTransformer[Nothing, B]): MyList[B] = Empty
-  def flatMap[B](transformer: MyTransformer[Nothing, MyList[B]]): MyList[B] = Empty // For the FlatMap we need the Concatenate Function
-  def filter(predicate: MyPredicate[Nothing]): MyList[Nothing] = Empty
+  def map[B](transformer: Nothing => B): MyList[B] = Empty
+  def flatMap[B](transformer: Nothing => MyList[B]): MyList[B] = Empty // For the FlatMap we need the Concatenate Function
+  def filter(predicate: Nothing => Boolean): MyList[Nothing] = Empty
 
   def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
 }
@@ -66,8 +69,8 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
       = new Cons(2, Empty.filter( n % 2 == 0)
       = new Const(2, Empty) Our final result
    */
-  def filter(predicate: MyPredicate[A]): MyList[A] =
-    if (predicate.test(h)) new Cons(h, t.filter(predicate))
+  def filter(predicate: A => Boolean): MyList[A] =
+    if (predicate.apply(h)) new Cons(h, t.filter(predicate)) // We use predicate.apply just to highlight it, but could be written predicate(h) only
     else t.filter(predicate)
 
   /*
@@ -77,8 +80,8 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
     = new Cons(2, new Cons(4, new Cons(6, Empty.map(n*2))
     = new Cons(2, new Cons(4, new Cons(6, Empty))) Our final result
    */
-  def map[B](transformer: MyTransformer[A, B]): MyList[B] =
-    new Cons(transformer.transform(h), t.map(transformer))
+  def map[B](transformer: A  => B): MyList[B] =
+    new Cons(transformer.apply(h), t.map(transformer)) // We use predicate.apply just to highlight it, but could be written predicate(h) only
 
   /*
    if I concatenate [1,2] ++ [3,4,5]
@@ -95,17 +98,20 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
     = [1,2] ++ [2,3] ++ Empty
     = [1,2,2,3]
    */
-  def flatMap[B](transformer: MyTransformer[A, MyList[B]]): MyList[B] =
-    transformer.transform(h) ++ t.flatMap(transformer)
+  def flatMap[B](transformer: A => MyList[B]): MyList[B] =
+    transformer(h) ++ t.flatMap(transformer)
 }
 
-trait MyPredicate[-T] {
+/**
+This is no longer necessary
+MyPredicate and MyTransformer was replaced by Scala Function Types
+trait MyPredicate[-T] { //MyPredicate is a Function type of T => Boolean - what generic -T and not T?
   def test(elem: T): Boolean
 }
 
-trait MyTransformer[-A, B] {
+trait MyTransformer[-A, B] { // A => B - why Convaliant -A had to be defined as -A not A? review again more in deep
   def transform(elem: A): B
-}
+}**/
 
 object ListTest extends App {
 
@@ -131,21 +137,21 @@ object ListTest extends App {
     println(listOfStrings.toString)
 
     // Our own .map() implementation using Anonymous Class and Generics
-    println(listOfIntegers.map(new MyTransformer[Int, Int] {
+    println(listOfIntegers.map(new Function1[Int, Int] {
       // Anonymous Class
-      override def transform(elem: Int): Int = elem * 2
+      override def apply(elem: Int): Int = elem * 2
     }).toString)
 
     // Our own .filter() implementation
-    println(listOfIntegers.filter(new MyPredicate[Int]{
-      override def test(elem: Int): Boolean = elem % 2 == 0
+    println(listOfIntegers.filter(new Function1[Int, Boolean]{
+      override def apply(elem: Int): Boolean = elem % 2 == 0
     }).toString)
 
     println((listOfIntegers ++ anotherListOfIntegers).toString)
 
     // Our own .flatMap() implementation
-    println(listOfIntegers.flatMap(new MyTransformer[Int, MyList[Int]] {
-      override def transform(elem: Int): MyList[Int] = new Cons(elem, new Cons(elem + 1, Empty))
+    println(listOfIntegers.flatMap(new Function[Int, MyList[Int]] {
+      override def apply(elem: Int): MyList[Int] = new Cons(elem, new Cons(elem + 1, Empty))
     }))
 
     println(cloneListOfIntegers == listOfIntegers) // Out of box it was implemented equals method applied to the list
