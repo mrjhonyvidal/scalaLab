@@ -32,6 +32,9 @@ abstract class MyList[+A] {
 
   // This is our concatenate function
   def ++[B >: A](list: MyList[B]): MyList[B]
+
+  // High Order Functions (HOFS)
+  def foreach(f: A => Unit): Unit
 }
 
 /**
@@ -50,6 +53,9 @@ case object Empty extends MyList[Nothing] {
   def filter(predicate: Nothing => Boolean): MyList[Nothing] = Empty
 
   def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
+
+  // HOFS
+  def foreach(f: Nothing => Unit): Unit = ()
 }
 
 case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
@@ -100,6 +106,12 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
    */
   def flatMap[B](transformer: A => MyList[B]): MyList[B] =
     transformer(h) ++ t.flatMap(transformer)
+
+  // HOFS
+  def foreach(f: A => Unit): Unit = {
+    f(h)
+    t.foreach(f)
+  }
 }
 
 /**
@@ -163,4 +175,6 @@ object ListTest extends App {
     println(listOfIntegers.flatMap(elem => new Cons(elem, new Cons(elem + 1, Empty))).toString)
 
     println(cloneListOfIntegers == listOfIntegers) // Out of box it was implemented equals method applied to the list
+
+    listOfIntegers.foreach(println)
 }
