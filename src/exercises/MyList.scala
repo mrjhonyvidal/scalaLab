@@ -35,6 +35,7 @@ abstract class MyList[+A] {
 
   // High Order Functions (HOFS)
   def foreach(f: A => Unit): Unit
+  def sort(compare: (A, A) => Int): MyList[A]
 }
 
 /**
@@ -56,6 +57,7 @@ case object Empty extends MyList[Nothing] {
 
   // HOFS
   def foreach(f: Nothing => Unit): Unit = ()
+  def sort(compare: (Nothing, Nothing) => Int) = Empty
 }
 
 case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
@@ -111,6 +113,17 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   def foreach(f: A => Unit): Unit = {
     f(h)
     t.foreach(f)
+  }
+
+  def sort(compare: (A, A) => Int): MyList[A] = {
+    // TODO refactor insert function to use @tailrec
+    def insert(x: A, sortedList: MyList[A]): MyList[A] =
+      if (sortedList.isEmpty) new Cons(x, Empty)
+      else if (compare(x, sortedList.head) <= 0) new Cons(x, sortedList)
+      else new Cons(sortedList.head, insert(x, sortedList.tail))
+
+    val sortedTail = t.sort(compare)
+    insert(h, sortedTail)
   }
 }
 
@@ -177,4 +190,5 @@ object ListTest extends App {
     println(cloneListOfIntegers == listOfIntegers) // Out of box it was implemented equals method applied to the list
 
     listOfIntegers.foreach(println)
+    println(listOfIntegers.sort((x, y) => y - x))
 }
