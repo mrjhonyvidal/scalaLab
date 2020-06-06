@@ -86,4 +86,32 @@ object HOFsCurries extends App {
    *  andThen(f,g) => x => g(f(x))
    *
    */
+  def toCurry(f: (Int, Int) => Int): (Int => Int => Int) =
+    x => y => f(x,y)
+
+  def fromCurry(f: (Int => Int => Int)): (Int, Int) => Int =
+    (x,y) => f(x)(y)
+
+  // FunctionX
+  def compose[A, B, T](f: A => B, g: T => A): T => B =
+    x => f(g(x))
+
+  def andThen[A, B, C](f: A => B, g: B => C): A => C =
+    x => g(f(x))
+
+  def superAdder2: (Int => Int => Int) = toCurry(_ + _)
+  def add4 = superAdder2(4)
+  println(add4(17))
+
+  val simpleAdder = fromCurry(superAdder)
+  println(simpleAdder(4,17))
+
+  val add2 = (x: Int) => x + 2
+  val time3 = (x: Int) => x * 3
+
+  val composed = compose(add2, time3)
+  val ordered = andThen(add2, time3)
+
+  println(composed(4))
+  println(ordered(4))
 }
