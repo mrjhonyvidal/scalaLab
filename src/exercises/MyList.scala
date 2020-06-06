@@ -36,6 +36,7 @@ abstract class MyList[+A] {
   // High Order Functions (HOFS)
   def foreach(f: A => Unit): Unit
   def sort(compare: (A, A) => Int): MyList[A]
+  def zipWith[B, C](list: MyList[B], zip:(A,B) => C): MyList[C]
 }
 
 /**
@@ -58,6 +59,9 @@ case object Empty extends MyList[Nothing] {
   // HOFS
   def foreach(f: Nothing => Unit): Unit = ()
   def sort(compare: (Nothing, Nothing) => Int) = Empty
+  def zipWith[B, C](list: MyList[B], zip: (Nothing, B) => C): MyList[C] =
+    if (!list.isEmpty) throw new RuntimeException("Lists do not have the same length")
+    else Empty
 }
 
 case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
@@ -125,6 +129,10 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
     val sortedTail = t.sort(compare)
     insert(h, sortedTail)
   }
+
+  def zipWith[B, C](list: MyList[B], zip: (A, B) => C): MyList[C] =
+    if (list.isEmpty) throw new RuntimeException("Lists do not have the same length")
+    else new Cons(zip(h, list.head), t.zipWith(list.tail, zip))
 }
 
 /**
@@ -191,4 +199,6 @@ object ListTest extends App {
 
     listOfIntegers.foreach(println)
     println(listOfIntegers.sort((x, y) => y - x))
+
+    println(anotherListOfIntegers.zipWith[String, String](listOfStrings, _ + "-" + _))
 }
