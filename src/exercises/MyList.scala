@@ -217,4 +217,17 @@ object ListTest extends App {
     println(anotherListOfIntegers.zipWith[String, String](listOfStrings, _ + "-" + _))
 
     println(listOfIntegers.fold(0)(_ + _))
+
+    // Exercise: FOR COMPREHENSION
+    val combinations = for {
+      n <- listOfIntegers
+      string <- listOfStrings
+    } yield n + "-" + string
+    println(combinations)
+
+   // As For-Comprehensions are expression we can use it in the println statement
+   println(for {
+     n <- listOfIntegers
+     string <- listOfStrings
+   } yield n + "*" + string)
 }
