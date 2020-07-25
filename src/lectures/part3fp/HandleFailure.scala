@@ -66,7 +66,7 @@ object HandleFailure extends App{
     // map, filter, flatMap
     println(aSuccess.map(_ * 2))
     println(aSuccess.flatMap(x => Success(x*10)))
-    println(aSuccess.filter(_ > 10)) // turns Success into a Failure
+    println(aSuccess.filter(_ > 10)) // tu rns Success into a Failure
 
   /**
    * EXERCISE
