@@ -76,5 +76,22 @@ object PatternMatching extends App {
   def show(e: Expr): String = e match {
     case Number(n) => s"$n"
     case Sum(e1, e2) => show(e1) + " + " + show(e2)
+    case Prod(e1, e2) => {
+      def maybeShowParentheses(exp: Expr) = exp match {
+        case Prod(_, _) => show(exp)
+        case Number(_) => show(exp)
+        case _ => "(" + show(exp) + ")"
+      }
+
+      maybeShowParentheses(e1) + " + " + maybeShowParentheses(e2)
+    }
   }
+
+  /**
+   * Add different combinations
+   */
+  println(show(Sum(Number(2), Number(3))))
+  println(show(Sum(Sum(Number(2), Number(3)), Number(3))))
+  println(show(Prod(Sum(Number(2), Number(1)), Number(3))))
+  println(show(Sum(Prod(Number(2), Number(1)), Number(3))))
 }
