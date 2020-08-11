@@ -1,0 +1,3 @@
+[submodule "akka-essentials"]
+	path = akka-essentials
+	url = git@github.com:sms-joliveira/akka-essentials.git
