@@ -1,5 +1,7 @@
 package lectures.part2oop
 
+import scala.language.postfixOps
+
 object MethodNotations extends App {
 
   class Person(val name: String, favoriteMovie: String, val age: Int = 0) {
