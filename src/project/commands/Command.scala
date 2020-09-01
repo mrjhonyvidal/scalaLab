@@ -15,7 +15,28 @@ trait Command {
 
 object Command {
 
+  val MKDIR = "mkdir"
+
+  // Just return the state
+  def emptyCommand: Command = new Command {
+    override def apply(state: State): State = state
+  }
+
+  def incompleteCommand(name: String): Command = new Command {
+    override def apply(state: State): State =
+      state.setMessage(name + ": incomplete command!")
+  }
+
+
   // Command.from will create the command
-  def from(input: String): Command =
-    new UnknownCommand
+  def from(input: String): Command = {
+    val tokens: Array[String] = input.split(" ")
+
+    // TODO Refactor applying design pattern
+    if (input.isEmpty || tokens.isEmpty) emptyCommand
+    else if(MKDIR.equals(tokens(0))) {
+      if (tokens.length < 2) incompleteCommand("mkdir")
+      else new Mkdir(tokens(1))
+    } else new UnknownCommand
+  }
 }

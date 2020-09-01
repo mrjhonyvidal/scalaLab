@@ -15,9 +15,7 @@ class State(val root: Directory, val workingDirectory: Directory, val output: St
 
   // emphasize immutability by returning a new State on setting a new message
   def setMessage(message: String): State =
-
-    // This State with parenthesis call our apply method defined on the object State
-    State(root, workingDirectory, message)
+    State(root, workingDirectory, message) // This State with parenthesis call our apply method defined on the object State
 }
 
 // Companion Object
