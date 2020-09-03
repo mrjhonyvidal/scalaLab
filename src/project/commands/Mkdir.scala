@@ -80,7 +80,6 @@ class Mkdir(folderName: String) extends Command {
        *      /a.replaceEntry("b", updateStructure(/b, [], /e) = /b.add(/e)
        *        => path.isEmpty? => /b.add(/e) -- new Directory Structure
        */
-
     }
 
 

@@ -16,6 +16,7 @@ trait Command {
 object Command {
 
   val MKDIR = "mkdir"
+  val LS = "ls"
 
   // Just return the state
   def emptyCommand: Command = new Command {
@@ -27,7 +28,6 @@ object Command {
       state.setMessage(name + ": incomplete command!")
   }
 
-
   // Command.from will create the command
   def from(input: String): Command = {
     val tokens: Array[String] = input.split(" ")
@@ -37,6 +37,8 @@ object Command {
     else if(MKDIR.equals(tokens(0))) {
       if (tokens.length < 2) incompleteCommand("mkdir")
       else new Mkdir(tokens(1))
-    } else new UnknownCommand
+    } else if (LS.equals(tokens(0))) {
+      new Ls
+    }else new UnknownCommand
   }
 }
