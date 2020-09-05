@@ -18,6 +18,7 @@ object Command {
   val MKDIR = "mkdir"
   val LS = "ls"
   val PWD = "pwd"
+  val TOUCH = "touch"
 
   // Just return the state
   def emptyCommand: Command = new Command {
@@ -31,17 +32,24 @@ object Command {
 
   // Command.from will create the command
   def from(input: String): Command = {
+
     val tokens: Array[String] = input.split(" ")
 
-    // TODO Refactor applying design pattern
-    if (input.isEmpty || tokens.isEmpty) emptyCommand
-    else if(MKDIR.equals(tokens(0))) {
-      if (tokens.length < 2) incompleteCommand("mkdir")
-      else new Mkdir(tokens(1))
-    } else if (LS.equals(tokens(0))) {
-      new Ls
-    } else if (PWD.equals(tokens(0))){
-      new Pwd
-    }else new UnknownCommand
+    // We return a Scala PartialFunction
+    val availableCommands: List[PartialFunction[String, Command]] = List(
+      {
+        case MKDIR => if (tokens.length < 2) incompleteCommand(MKDIR) else new Mkdir(tokens(1))
+        case LS => new Ls
+        case PWD => new Pwd
+        case TOUCH => if (tokens.length < 2) incompleteCommand(TOUCH) else new Touch(tokens(1))
+        case _ => new UnknownCommand
+      }
+    )
+
+    // Traverse the list of Commands and apply the .orElse function to the traversal as we defined as a PartialFunction
+    availableCommands.tail.foldLeft(availableCommands.head)(_.orElse(_)) {
+      // tokens(0) first input from the user
+      tokens(0)
+    }
   }
 }
