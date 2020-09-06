@@ -3,7 +3,7 @@ package project.files
 import project.directory.Directory
 import project.filesystem.FilesystemException
 
-class File(override val parentPath: String, override val name: String, contents: String)
+class File(override val parentPath: String, override val name: String, val contents: String)
 extends DirEntry(parentPath, name) {
 
   def asDirectory: Directory =
@@ -15,6 +15,12 @@ extends DirEntry(parentPath, name) {
   def isFile: Boolean = true
 
   def getType: String = "File"
+
+  def setContents(newContents: String): File =
+    new File(parentPath, name, newContents)
+
+  def appendContents(newContents: String): File =
+    setContents(contents + "\n" + newContents)
 }
 
 object File {

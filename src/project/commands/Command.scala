@@ -8,7 +8,6 @@ import project.filesystem.State
  * Classes and objects can extend traits, but traits cannot be instantiated and have no parameters.
  */
 trait Command {
-
   // Transform a ourproject.filesystem.State into another ourproject.filesystem.State
   def apply(state: State): State
 }
@@ -20,6 +19,9 @@ object Command {
   val PWD = "pwd"
   val TOUCH = "touch"
   val CD = "cd"
+  val RM = "rm"
+  val ECHO = "echo"
+  val CAT = "cat"
 
   // Just return the state
   def emptyCommand: Command = new Command {
@@ -44,14 +46,19 @@ object Command {
         case PWD => new Pwd
         case TOUCH => if (tokens.length < 2) incompleteCommand(TOUCH) else new Touch(tokens(1))
         case CD => if (tokens.length < 2) incompleteCommand(CD) else new Cd(tokens(1))
+        case RM => if (tokens.length < 2) incompleteCommand(RM) else new Rm(tokens(1))
+        case ECHO => if (tokens.length < 2) incompleteCommand(ECHO) else new Echo(tokens.tail)
+        case CAT => if (tokens.length < 2) incompleteCommand(CAT) else new Cat(tokens(1))
         case _ => new UnknownCommand
       }
     )
 
-    // Traverse the list of Commands and apply the .orElse function to the traversal as we defined as a PartialFunction
-    availableCommands.tail.foldLeft(availableCommands.head)(_.orElse(_)) {
-      // tokens(0) first input from the user
-      tokens(0)
+    if (input.isEmpty || tokens.isEmpty) emptyCommand
+    else {
+      // Traverse the list of Commands and apply the .orElse function to the traversal as we defined as a PartialFunction
+      availableCommands.tail.foldLeft(availableCommands.head)(_.orElse(_)) {
+        tokens(0) // tokens(0) first input from the user
+      }
     }
   }
 }
