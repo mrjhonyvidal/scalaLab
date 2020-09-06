@@ -7,10 +7,12 @@ import project.filesystem.State
  * Similar to Java 8's interfaces.
  * Classes and objects can extend traits, but traits cannot be instantiated and have no parameters.
  */
-trait Command {
+/**trait Command {
   // Transform a ourproject.filesystem.State into another ourproject.filesystem.State
   def apply(state: State): State
-}
+}**/
+// Function Type already have the apply method implemented on them
+trait Command extends (State => State) { }
 
 object Command {
 
