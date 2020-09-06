@@ -32,6 +32,8 @@ class Directory(override val parentPath: String, override val name: String, val 
       findEntryHelper(entryName, contents)
   }
 
+  def isRoot: Boolean = parentPath.isEmpty
+
   // Filter out all the folders that do have the Directory we're replacing
   def replaceEntry(entryName: String, newEntry: DirEntry): Directory =
     new Directory(parentPath, name, contents.filter(e => !e.name.equals(entryName)) :+ newEntry)
@@ -39,6 +41,9 @@ class Directory(override val parentPath: String, override val name: String, val 
   def asDirectory: Directory = this
 
   def asFile: File = throw new FilesystemException("A directory cannot be converted to File")
+
+  def isDirectory: Boolean = true
+  def isFile: Boolean = false
 
   override def getType: String = "Directory "
 }
