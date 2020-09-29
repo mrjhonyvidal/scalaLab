@@ -59,12 +59,10 @@ object AdvancedPatternMatching extends App {
 
   object isEven {
     def unapply(arg: Int): Boolean = arg % 2 == 0
-    else None
   }
 
   object isSingleDigit {
     def unapply(arg: Int): Boolean = arg > -10 && arg < 10
-    else None
   }
 
   val n: Int = 8
